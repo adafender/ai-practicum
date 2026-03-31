@@ -211,6 +211,14 @@ class TrainingConversationWithRAG:
             )
             base_prompt += rag_instruction
         
+        # Add instruction for concise responses
+        concise_instruction = (
+            "\n\nIMPORTANT: Keep your responses SHORT and conversational (1-3 sentences max). "
+            "Respond like a real person in a phone/chat conversation, not like you're writing an essay. "
+            "Don't over-explain. Let the conversation flow naturally."
+        )
+        base_prompt += concise_instruction
+        
         return base_prompt
     
     def _retrieve_context(self, user_message, k=3):
@@ -310,7 +318,10 @@ class TrainingConversationWithRAG:
         self.messages.append(user_msg)
         self.messages.append(AIMessage(content=response.content))
         
-        # Text-to-speech if enabled
+        # DISPLAY TEXT FIRST, then speak
+        print(f"\nCustomer: {response.content}\n")
+        
+        # Text-to-speech if enabled (plays after text is shown)
         if speak:
             self._speak(response.content)
         
@@ -394,11 +405,17 @@ def run_interactive_session_with_rag():
     selected_key = list(personas.keys())[choice]
     persona = personas[selected_key]
     
-    # Set company context
+    # Set company context with simplified input
+    print("\nDescribe the scenario in one sentence:")
+    print("Example: 'A customer calling about a delayed shipment for an online clothing store'")
+    print("Example: 'A potential client asking about pricing for our cloud storage service'")
+    scenario_input = input("\nScenario: ").strip()
+    
+    # Parse or use the whole thing as context
     company_context = {
-        "company_product": input("Product/Service: "),
-        "scenario_context": input("Scenario context: "),
-        "company_industry": input("Industry: ")
+        "company_product": scenario_input,
+        "scenario_context": scenario_input,
+        "company_industry": scenario_input
     }
     
     # Voice selection
@@ -430,9 +447,8 @@ def run_interactive_session_with_rag():
     speaking = True
     
     # Customer starts the conversation
-    initial_prompt = f"You are starting a conversation with a {company_context['company_industry']} representative about {company_context['company_product']}. Begin the conversation as the customer would."
+    initial_prompt = f"You are starting a conversation. Scenario: {scenario_input}. Begin as the customer would with a brief opening statement."
     first_message = conversation.send_message(initial_prompt, speak=speaking)
-    print(f"Customer: {first_message}\n")
     
     # Conversation loop
     while True:
@@ -451,10 +467,9 @@ def run_interactive_session_with_rag():
             print("[Speech unmuted]\n")
             continue
         
-        # Only send non-empty messages
+        # Only send non-empty messages (text displays inside send_message)
         if user_input:
-            response = conversation.send_message(user_input, speak=speaking)
-            print(f"\nCustomer: {response}\n")
+            conversation.send_message(user_input, speak=speaking)
     
     # Save conversation JSON
     conv_filename = conversation.save()
