@@ -156,19 +156,32 @@ def run_interactive_session_with_rag():
     print(f"Difficulty: {persona['personality']['difficulty']}")
     print(f"RAG Enabled: {use_rag}")
     print(f"{'='*50}\n")
+    print("YOU are the salesperson/service representative.")
+    print("The AI will roleplay as the CUSTOMER.")
+    print("The customer will initiate the conversation.\n")
     print("Type 'quit' to end the conversation\n")
     
+    # Customer starts the conversation
+    initial_prompt = f"You are starting a conversation with a {company_context['company_industry']} representative about {company_context['company_product']}. Begin the conversation as the customer would."
+    first_message = conversation.send_message(initial_prompt)
+    print(f"Customer: {first_message}\n")
+    
     while True:
-        user_input = input("You: ")
+        user_input = input("You (Rep): ")
+        
+        # Check for quit BEFORE sending to AI
         if user_input.lower() == "quit":
             print("\nEnding conversation...")
             break
-        response = conversation.send_message(user_input)
-        print(f"\nCustomer: {response}\n")
+        
+        # Only send non-quit messages
+        if user_input.strip():  # Also ignore empty inputs
+            response = conversation.send_message(user_input)
+            print(f"\nCustomer: {response}\n")
     
     filename = conversation.save()
     print(f"\n{'='*50}")
-    print(f"Conversation Complete!")
+    print("Conversation Complete!")
     print(f"Total exchanges: {conversation.get_exchange_count()}")
     print(f"Saved to: {filename}")
     print(f"{'='*50}")
