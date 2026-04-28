@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { startConversation, getPersonas } from "../api";
+import { startConversation, getPersonas, uploadDocument } from "../api";
 
 export default function StartScreen({ onStart }) {
   const [personas, setPersonas] = useState({});
@@ -8,6 +8,8 @@ export default function StartScreen({ onStart }) {
   const [scenario, setScenario] = useState("being overcharged");
   const [industry, setIndustry] = useState("telecom");
   const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     async function loadPersonas() {
@@ -26,6 +28,26 @@ export default function StartScreen({ onStart }) {
 
     loadPersonas();
   }, []);
+
+  const handleUpload = async () => {
+  if (!file) {
+    alert("Please select a file first");
+    return;
+  }
+
+  try {
+    setUploading(true);
+
+    const res = await uploadDocument(file);
+    alert(res.message || "Upload successful");
+
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert("Upload failed");
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleStart = async () => {
     try {
@@ -98,6 +120,20 @@ export default function StartScreen({ onStart }) {
         onChange={(e) => setIndustry(e.target.value)}
       />
 
+      <br /><br />
+
+      <label>Upload Company Document (optional):</label>
+      <br />
+      <input
+        type="file"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+
+      <br /><br />
+      <button onClick={handleUpload} disabled={uploading}>
+        {uploading ? "Uploading..." : "Upload Document"}
+      </button>
+      
       <br /><br />
 
       <button onClick={handleStart} disabled={!persona}>
