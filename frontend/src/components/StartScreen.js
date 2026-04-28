@@ -35,7 +35,14 @@ export default function StartScreen({ onStart }) {
         company_industry: industry
       });
 
+      // PLAY AUDIO HERE
+      if (res.audio_url) {
+        const audio = new Audio(`http://localhost:5000${res.audio_url}`);
+        audio.play().catch(err => console.log("Audio blocked:", err));
+      }
+
       onStart(res);
+
     } catch (err) {
       console.error("Error starting conversation:", err);
       alert("Failed to start conversation. Make sure backend is running.");

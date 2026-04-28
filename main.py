@@ -204,7 +204,7 @@ class TrainingConversation:
             return ""
     
     def _speak(self, text):
-        """Convert text to speech using OpenAI TTS and play it."""
+        """Convert text to speech and save it (no local playback)."""
         try:
             with self.openai_client.audio.speech.with_streaming_response.create(
                 model=DEFAULT_TTS_MODEL,
@@ -214,10 +214,11 @@ class TrainingConversation:
             ) as response:
                 response.stream_to_file(self.speech_file_path)
             
-            self._play_audio(self.speech_file_path)
-        
+            return str(self.speech_file_path)  
+
         except Exception as e:
             print(f"[TTS error: {e}]")
+            return None
     
     def _play_audio(self, file_path):
         """Play an audio file using the system's default player."""
@@ -239,53 +240,65 @@ class TrainingConversation:
     def send_message(self, user_message, speak=True):
         """
         Send a message and get the AI response with RAG and optional TTS.
-        
-        Args:
-            user_message: String message from the trainee
-            speak: Whether to read the response aloud (default True)
-            
+
         Returns:
-            String response from the AI persona
+            dict: { "text": ..., "audio_url": ... }
         """
-        # Retrieve relevant context if RAG is enabled
         context = self._retrieve_context(user_message)
-        
-        # Build messages with system prompt and history
-        messages = [self.messages[0]]  # System message
-        
-        # Add conversation history
+
+        messages = [self.messages[0]]
+
+        # Add chat history
         for role, content in self.chat_history:
             if role == "user":
                 messages.append(HumanMessage(content=content))
             else:
                 messages.append(AIMessage(content=content))
-        
-        # Add context as a system message if available
+
+        # STRONGER RAG INJECTION 
         if context:
-            messages.append(SystemMessage(content=f"Relevant company information:\n{context}"))
-        
-        # Add current user message
+            messages.append(SystemMessage(content=f"""
+    You are roleplaying as a CUSTOMER interacting with a company.
+
+    You have access to internal knowledge about this company.
+
+    You MUST use the following company information when responding:
+    {context}
+
+    If the representative says something incorrect or contradicts this information,
+    you should naturally question or challenge it like a real customer would.
+
+    Do NOT ignore this information.
+    """))
+
+        # Add user message
         user_msg = HumanMessage(content=user_message)
         messages.append(user_msg)
-        
-        # Get response from LLM
+
+        # Get response
         response = self.llm.invoke(messages)
-        
-        # Save to history
+
+        # Store history
         self.chat_history.append(("user", user_message))
         self.chat_history.append(("assistant", response.content))
-        
-        # Store in messages for transcript
+
         self.messages.append(user_msg)
         self.messages.append(AIMessage(content=response.content))
-        
-        # Display text first, then speak
+
         print(f"\nCustomer: {response.content}\n")
-        
+
+        audio_url = None
+
         if speak:
-            self._speak(response.content)
-        
-        return response.content
+            audio_path = self._speak(response.content)
+
+            if audio_path:
+                audio_url = "/audio"
+
+        return {
+            "text": response.content,
+            "audio_url": audio_url
+        }
     
     def get_transcript(self):
         """Get conversation transcript without system prompt."""

@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sendMessage, endConversation } from "../api";
 
-export default function ChatScreen({ convoId, firstMessage, onEnd }) {
+export default function ChatScreen({ convoId, firstMessage, audioUrl, onEnd }) {
   const [messages, setMessages] = useState([
     { role: "customer", content: firstMessage }
   ]);
 
   const [input, setInput] = useState("");
+
+  //  FIRST MESSAGE AUDIO AFTER LOAD
+  useEffect(() => {
+    if (audioUrl) {
+      const audio = new Audio(`http://localhost:5000${audioUrl}`);
+      audio.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+      });
+    }
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -25,6 +35,12 @@ export default function ChatScreen({ convoId, firstMessage, onEnd }) {
         { role: "customer", content: res.response }
       ]);
 
+      // 🔥 PLAY AUDIO
+      if (res.audio_url) {
+        const audio = new Audio(`http://localhost:5000${res.audio_url}`);
+        audio.play().catch(err => console.log("Audio blocked:", err));
+      }
+
       setInput("");
     } catch (err) {
       console.error(err);
@@ -35,12 +51,7 @@ export default function ChatScreen({ convoId, firstMessage, onEnd }) {
   const handleEnd = async () => {
     try {
       const res = await endConversation(convoId);
-
-      console.log("END RESPONSE:", res); // debug
-
-      
-      onEnd(res.report_card); 
-
+      onEnd(res.report_card);
     } catch (err) {
       console.error(err);
       alert("Failed to end conversation");

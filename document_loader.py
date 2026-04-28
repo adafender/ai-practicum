@@ -41,18 +41,31 @@ class DocumentProcessor:
         documents = []
         for filename in os.listdir(directory_path):
             filepath = os.path.join(directory_path, filename)
+
             if filename.endswith(".txt"):
-                with open(filepath, "r") as f:
+                with open(filepath, "r", encoding="utf-8") as f:
                     text = f.read()
                 documents.append(Document(page_content=text, metadata={"source": filename}))
+
             elif filename.endswith(".pdf"):
                 try:
                     import PyPDF2
                     reader = PyPDF2.PdfReader(filepath)
-                    text = "\n".join(page.extract_text() or "" for page in reader.pages)
-                    documents.append(Document(page_content=text, metadata={"source": filename}))
-                except ImportError:
-                    print("PyPDF2 not installed; skipping PDF:", filename)
+
+                    text = ""
+                    for page in reader.pages:
+                        extracted = page.extract_text()
+                        if extracted:
+                            text += extracted
+
+                    if text.strip():  # only add if there's actual content
+                        documents.append(Document(page_content=text, metadata={"source": filename}))
+                    else:
+                        print(f"Skipping empty PDF: {filename}")
+
+                except Exception as e:
+                    print(f"Error reading PDF {filename}: {e}")
+
         return documents
 
     def process_documents(self, documents):
