@@ -40,13 +40,40 @@ from config import (
 #  REPORT CARD HELPERS
 # ════════════════════════════════════════════════════════════════════════════
 
-def generate_report_card(llm, conversation_data):
+def generate_report_card(llm, conversation_data, retriever=None):
     """Generate a coaching report card from a completed conversation."""
     persona = conversation_data["persona"]
-    context = conversation_data["company_context"]
+    base_context = conversation_data.get("company_context", "")
     transcript = conversation_data["transcript"]
     exchange_count = conversation_data["exchange_count"]
     
+    # Convert transcript to string for retrieval
+    transcript_text = "\n".join([m["content"] for m in transcript])
+    
+    # 🔥 RAG retrieval (only if retriever exists)
+    rag_context = ""
+    if retriever:
+        try:
+            results = retriever.retrieve(transcript_text, top_k=4)
+            if results:
+                rag_context = "\n\n".join([
+                    f"[Company Doc]:\n{doc.page_content}" for doc in results
+                ])
+        except Exception as e:
+            print(f"[Report RAG error: {e}]")
+            rag_context = ""
+    
+    # Smart fallback logic (handles ALL cases)
+    if rag_context and base_context:
+        context = f"{base_context}\n\nRelevant Policies:\n{rag_context}"
+    elif rag_context:
+        context = rag_context
+    elif base_context:
+        context = base_context
+    else:
+        context = "No company guidelines provided. Give general sales coaching."
+    
+    # Build evaluation request (unchanged)
     user_content = format_evaluation_request(persona, context, transcript, exchange_count)
     
     messages = [
@@ -443,7 +470,11 @@ def run_training_session():
         return
     
     print("\nGenerating your report card, please wait…")
-    report_text = generate_report_card(conversation.llm, conversation_data)
+    report_text = generate_report_card(
+    conversation.llm,
+    conversation_data,
+    retriever=conversation.vectorstore
+    )
     
     print_report_card(report_text, conversation_data)
     

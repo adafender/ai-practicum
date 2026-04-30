@@ -4,22 +4,22 @@ from dotenv import load_dotenv
 import json
 import uuid
 import time
+import os
 
 from main import TrainingConversation, generate_report_card
 from prompts import get_conversation_starter
 
-# ✅ ADD THIS IMPORT
 from document_loader import DocumentProcessor
 
 load_dotenv(dotenv_path='.env')
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
-# ✅ INITIALIZE DOCUMENT PROCESSOR (GLOBAL)
+# INITIALIZE DOCUMENT PROCESSOR (GLOBAL)
 doc_processor = DocumentProcessor()
 
-# ✅ LOAD COMPANY DOCS AT STARTUP
+# LOAD COMPANY DOCS AT STARTUP
 doc_processor.add_documents_to_vectorstore("company_docs")
 
 # Load personas
@@ -185,7 +185,7 @@ def upload_file():
     file.save(filepath)
 
     try:
-        # 🔥 Re-index documents after upload
+        # Re-index documents after upload
         doc_processor.add_documents_to_vectorstore(upload_folder)
 
         return jsonify({

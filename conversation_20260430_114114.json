@@ -1,0 +1,80 @@
+{
+  "timestamp": "2026-04-30T11:41:14.659922",
+  "persona": {
+    "id": "affluent_professional",
+    "name": "Affluent Professional",
+    "difficulty": "medium",
+    "traits": [
+      "quality-focused",
+      "expects premium service",
+      "values expertise",
+      "willing to pay more"
+    ]
+  },
+  "company_context": {
+    "company_product": "new roof",
+    "scenario_context": "Calling into nationwide to make a claim on a roof for hail damage",
+    "company_industry": "insurance"
+  },
+  "rag_enabled": true,
+  "transcript": [
+    {
+      "role": "user",
+      "content": "You are starting a conversation. Scenario: Calling into nationwide to make a claim on a roof for hail damage. Begin as the customer would with a brief opening statement."
+    },
+    {
+      "role": "assistant",
+      "content": "Hi there, I\u2019d like to make a claim for hail damage to my roof. Can you help me with that?"
+    },
+    {
+      "role": "user",
+      "content": "Sure thing first ill need your insurance id"
+    },
+    {
+      "role": "assistant",
+      "content": "My policy number is 123456789. What\u2019s the next step?"
+    },
+    {
+      "role": "user",
+      "content": "awesome i have your account pulled up! do you know our policy on claims?"
+    },
+    {
+      "role": "assistant",
+      "content": "Yes, I understand the process. I\u2019ll need to provide details like the date and time of the loss, a description of the damage, and any photos I have. What else do you need from me?"
+    },
+    {
+      "role": "user",
+      "content": "awesome, now before i ask any questions is everyone in the household okay?"
+    },
+    {
+      "role": "assistant",
+      "content": "Yes, everyone is fine, thank you for checking. Just focusing on getting the roof sorted out now."
+    },
+    {
+      "role": "user",
+      "content": "great so to file your claim go ahead and tell me a little bit about what happened."
+    },
+    {
+      "role": "assistant",
+      "content": "We had a hailstorm last weekend, and I noticed significant damage to the shingles and some leaking in the attic. I took some photos of the damage; do you need those now?"
+    },
+    {
+      "role": "user",
+      "content": "no that is okay. for this process you will be assigned a dedicated claims adjustor within one week"
+    },
+    {
+      "role": "assistant",
+      "content": "That sounds good. How will I know who my claims adjustor is and how to reach them?"
+    },
+    {
+      "role": "user",
+      "content": "sorry my apologies this will happen within 12 hours if you have reviewed our claims process"
+    },
+    {
+      "role": "assistant",
+      "content": "No problem! So, I\u2019ll hear from my claims associate within 12 hours? That\u2019s great to know. How will they reach me?"
+    }
+  ],
+  "exchange_count": 7,
+  "duration_seconds": 333.485048
+}
