@@ -35,7 +35,7 @@ export default function ChatScreen({ convoId, firstMessage, audioUrl, onEnd }) {
         { role: "customer", content: res.response }
       ]);
 
-      // 🔥 PLAY AUDIO
+      // Play the audio response
       if (res.audio_url) {
         const audio = new Audio(`http://localhost:5000${res.audio_url}`);
         audio.play().catch(err => console.log("Audio blocked:", err));

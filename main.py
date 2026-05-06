@@ -50,7 +50,7 @@ def generate_report_card(llm, conversation_data, retriever=None):
     # Convert transcript to string for retrieval
     transcript_text = "\n".join([m["content"] for m in transcript])
     
-    # 🔥 RAG retrieval (only if retriever exists)
+    # Retrieve relevant documents using RAG if retriever is available
     rag_context = ""
     if retriever:
         try:

@@ -57,7 +57,7 @@ export default function StartScreen({ onStart }) {
         company_industry: industry
       });
 
-      // PLAY AUDIO HERE
+      // Play the audio response from the conversation start
       if (res.audio_url) {
         const audio = new Audio(`http://localhost:5000${res.audio_url}`);
         audio.play().catch(err => console.log("Audio blocked:", err));
