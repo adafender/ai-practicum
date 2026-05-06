@@ -1,0 +1,246 @@
+/* ============================================
+   COMPONENT STYLES & ANIMATIONS
+   ============================================ */
+
+/* INFO CARD */
+.info-card {
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.05) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.info-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue-accent);
+}
+
+.info-card p {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+/* START SCREEN FORM LAYOUT */
+.start-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-section {
+  margin-bottom: 8px;
+}
+
+.form-section h3 {
+  margin: 20px 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue-accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-section:first-of-type h3 {
+  margin-top: 0;
+}
+
+/* BUTTON GROUPS */
+.button-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.button-group button {
+  flex: 1;
+  min-width: 120px;
+  margin: 0;
+}
+
+/* FILE UPLOAD SECTION */
+.file-upload-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.file-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-input-wrapper input[type="file"] {
+  display: none;
+}
+
+.file-upload-label {
+  display: block;
+  padding: 12px 14px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 2px dashed var(--blue-primary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.file-upload-label:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: var(--blue-accent);
+  color: var(--blue-accent);
+}
+
+/* STATUS MESSAGES */
+.status-message {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.status-message.loading {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--blue-accent);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.status-message.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-message.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* REPORT SCREEN */
+.report-container h3 {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-top: 20px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--blue-primary);
+  padding-bottom: 8px;
+}
+
+.report-container h3:first-child {
+  margin-top: 0;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.card {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.placeholder {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* SCROLLBAR STYLING - GLOBAL */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--blue-primary);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--blue-accent);
+}
+
+/* FOCUS STATES */
+button:focus-visible {
+  outline: 2px solid var(--blue-accent);
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+/* UTILITY CLASSES */
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 16px; }
+
+/* TRUNCATE TEXT */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

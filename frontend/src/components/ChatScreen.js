@@ -59,25 +59,37 @@ export default function ChatScreen({ convoId, firstMessage, audioUrl, onEnd }) {
   };
 
   return (
-    <div>
-      <h2>Chat</h2>
+  <div className="card chat-container">
+    <h2>Chat</h2>
 
-      <div style={{ height: "300px", overflowY: "scroll", border: "1px solid black" }}>
-        {messages.map((msg, i) => (
-          <div key={i}>
-            <b>{msg.role === "agent" ? "You" : "Customer"}:</b> {msg.content}
-          </div>
-        ))}
-      </div>
+    {/* MESSAGES */}
+    <div className="messages">
+      {messages.map((msg, i) => (
+        <div
+          key={i}
+          className={`message ${
+            msg.role === "agent" ? "agent" : "customer"
+          }`}
+        >
+          {msg.content}
+        </div>
+      ))}
+    </div>
 
+    {/* INPUT BAR */}
+    <div className="input-bar">
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Type your response..."
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSend();
+        }}
       />
 
       <button onClick={handleSend}>Send</button>
-      <button onClick={handleEnd}>End Conversation</button>
+      <button onClick={handleEnd}>End</button>
     </div>
-  );
+  </div>
+);
 }

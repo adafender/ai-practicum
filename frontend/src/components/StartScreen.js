@@ -72,73 +72,62 @@ export default function StartScreen({ onStart }) {
   };
 
   return (
-    <div>
-      <h1>Start Training</h1>
+  <div className="card">
+    <h2>Start Training</h2>
 
-      <label>Choose Persona:</label>
-      <br />
+    {/* Persona */}
+    <label>Choose Persona</label>
+    {loading ? (
+      <p>Loading personas...</p>
+    ) : (
+      <select value={persona} onChange={(e) => setPersona(e.target.value)}>
+        {Object.entries(personas).map(([key, p]) => (
+          <option key={key} value={key}>
+            {p.name} ({p.personality?.difficulty})
+          </option>
+        ))}
+      </select>
+    )}
 
-      {loading ? (
-        <p>Loading personas...</p>
-      ) : (
-        <select value={persona} onChange={(e) => setPersona(e.target.value)}>
-          {Object.entries(personas).map(([key, p]) => (
-            <option key={key} value={key}>
-              {p.name} ({p.personality?.difficulty})
-            </option>
-          ))}
-        </select>
-      )}
+    {/* Product */}
+    <label>Product</label>
+    <input
+      type="text"
+      value={product}
+      onChange={(e) => setProduct(e.target.value)}
+    />
 
-      <br /><br />
+    {/* Scenario */}
+    <label>Scenario</label>
+    <input
+      type="text"
+      value={scenario}
+      onChange={(e) => setScenario(e.target.value)}
+    />
 
-      <label>Product:</label>
-      <br />
-      <input
-        type="text"
-        value={product}
-        onChange={(e) => setProduct(e.target.value)}
-      />
+    {/* Industry */}
+    <label>Industry</label>
+    <input
+      type="text"
+      value={industry}
+      onChange={(e) => setIndustry(e.target.value)}
+    />
 
-      <br /><br />
+    {/* Upload */}
+    <label>Upload Company Document (optional)</label>
+    <input
+      type="file"
+      onChange={(e) => setFile(e.target.files[0])}
+    />
 
-      <label>Scenario:</label>
-      <br />
-      <input
-        type="text"
-        value={scenario}
-        onChange={(e) => setScenario(e.target.value)}
-      />
+    <button onClick={handleUpload} disabled={uploading}>
+      {uploading ? "Uploading..." : "Upload Document"}
+    </button>
 
-      <br /><br />
-
-      <label>Industry:</label>
-      <br />
-      <input
-        type="text"
-        value={industry}
-        onChange={(e) => setIndustry(e.target.value)}
-      />
-
-      <br /><br />
-
-      <label>Upload Company Document (optional):</label>
-      <br />
-      <input
-        type="file"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-
-      <br /><br />
-      <button onClick={handleUpload} disabled={uploading}>
-        {uploading ? "Uploading..." : "Upload Document"}
-      </button>
-      
-      <br /><br />
-
-      <button onClick={handleStart} disabled={!persona}>
-        Start Conversation
-      </button>
-    </div>
+    {/* Start Button */}
+    <button onClick={handleStart} disabled={!persona}>
+      Start Conversation
+    </button>
+  </div>
   );
 }
